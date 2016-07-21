@@ -36,11 +36,12 @@ void loop() {
   }
   
   if (digitalRead(BUTT2_PIN) == LOW) {
-    testRow(time);
+    //testRow(time);
+    swipeUShaped(time);
   }
     
   if (digitalRead(BUTT3_PIN) == LOW) {
-    swipeRightToLeft(time);
+    swipeHorizontal(time);
   }
     
   if (digitalRead(BUTT4_PIN) == LOW) {
@@ -77,14 +78,39 @@ void rowOn(byte row) {
   digitalWrite(rowPins[row], HIGH);
 }
 
+void multiRowOn(byte startRow, byte endRow){
+
+  // Turn on all the columnscol
+  for (int i = 0; i < sizeof(colPins); i++) {
+    digitalWrite(colPins[i], LOW);
+  }
+  
+  for(int j = startRow; j < endRow+1; j++){
+    digitalWrite(rowPins[j], HIGH);
+  }
+
+}
+
 //Turn an entire column on 
 void colOn(byte col) {
-  // Turn on all the columns
+  // Turn on all the rows
   for (int i = 0; i < sizeof(rowPins); i++) {
     digitalWrite(rowPins[i], HIGH);
   }
   
   digitalWrite(colPins[col], LOW);
+}
+
+void multiColOn(byte startCol, byte endCol) {
+ // Turn on all the rows
+  for (int i = 0; i < sizeof(rowPins); i++) {
+    digitalWrite(rowPins[i], HIGH);
+  }
+  
+  for(int j = startCol; j < endCol+1; j++){
+    digitalWrite(colPins[colPins[j]], LOW);
+  }
+  
 }
 
 // version 1 : Row -> Col
@@ -132,6 +158,11 @@ void resetPins() {
   }
 }
 
+void swipeHorizontal(int wait_ms){
+  swipeLeftToRight(wait_ms);
+  swipeRightToLeft(wait_ms);
+}
+
 
 // wait_ms is the time between swiching from one row/colum to another. use a lower value to get the animation to go faster.
 void swipeLeftToRight(int wait_ms) {
@@ -155,6 +186,11 @@ void swipeRightToLeft(int wait_ms) {
   resetPins(); // Turn all off when done
 }
 
+void swipeVertical(int wait_ms){
+  swipeBottomToTop(wait_ms);
+  swipeTopToBottom(wait_ms);
+}
+
 void swipeTopToBottom(int wait_ms) {
   for (int i = 0; i < sizeof(rowPins); i++) {
     resetPins();
@@ -173,6 +209,18 @@ void swipeBottomToTop(int wait_ms) {
   }
   
   resetPins(); // Turn all off when done
+}
+
+void swipeUShaped(int wait_ms){
+  multiColOn(4,6);
+  delay(wait_ms);
+  resetPins();
+  multiRowOn(0,3);
+  delay(wait_ms);
+  resetPins();
+  multiColOn(0,3);
+  delay(wait_ms);
+  resetPins();
 }
 
 
