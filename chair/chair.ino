@@ -29,15 +29,15 @@ void setup() {
 // To turn a pin on, write LOW to column, and HIGH to row
 
 void loop() {
-  int time = 100;
+  int time = 225;
   
   if (digitalRead(BUTT1_PIN) == LOW) {
-    testCol(time);
+    swipeVertical(time);
   }
   
   if (digitalRead(BUTT2_PIN) == LOW) {
-    //testRow(time);
-    swipeUShaped(time);
+    testRow(time);
+   // swipeUShaped(time);
   }
     
   if (digitalRead(BUTT3_PIN) == LOW) {
@@ -45,7 +45,14 @@ void loop() {
   }
     
   if (digitalRead(BUTT4_PIN) == LOW) {
-    everySingleOne(time);
+    singleton(3,3);
+    delay(30);
+    singleton(2,2);
+    delay(30);
+    singleton(1,1);
+    delay(30);
+    singleton(0,0);
+    resetPins();
   }
 }
 
@@ -59,11 +66,10 @@ void everySingleOne(int wait_ms) {
   //resetPins();
   for (int i = 0; i < sizeof(colPins); i++) {
     for (int j = 0; j < sizeof(rowPins); j++) {
-      if(getValueAt(i,j) == 1) {
-        singleton(i,j);
-        delay(10);
-        resetPins();
-      }
+      singleton(i,j);
+      delay(10);
+      resetPins();
+     
     }
   }
   resetPins();
@@ -118,7 +124,7 @@ void singleton(byte row, byte col) {
   digitalWrite(colPins[col], LOW);
   delay(150);
   resetRowsExceptFor(row);
-  delay(300);
+  delay(150);
 }
 
 // version 2 : Col -> Row
@@ -187,12 +193,12 @@ void swipeRightToLeft(int wait_ms) {
 }
 
 void swipeVertical(int wait_ms){
-  swipeBottomToTop(wait_ms);
-  swipeTopToBottom(wait_ms);
+  swipeBottomToTop(wait_ms, sizeof(rowPins), 0);
+  swipeTopToBottom(wait_ms, 1, sizeof(rowPins));
 }
 
-void swipeTopToBottom(int wait_ms) {
-  for (int i = 0; i < sizeof(rowPins); i++) {
+void swipeTopToBottom(int wait_ms, int startRow, int endRow) {
+  for (int i = startRow; i < endRow; i++) {
     resetPins();
     rowOn(i);
     delay(wait_ms);
@@ -201,11 +207,13 @@ void swipeTopToBottom(int wait_ms) {
   resetPins(); // Turn all off when done
 }
 
-void swipeBottomToTop(int wait_ms) {
-  for (int i = sizeof(rowPins); i >= 0; i--) {
+void swipeBottomToTop(int wait_ms, int startRow, int endRow) {
+  int curr_wait = wait_ms;
+  for (int i = startRow; i >= endRow; i--) {
     resetPins();
     rowOn(i);
-    delay(wait_ms);
+    //curr_wait = curr_wait - 5;
+    delay(curr_wait);
   }
   
   resetPins(); // Turn all off when done
@@ -232,7 +240,7 @@ void testCol(int time) {
 }
 
 void testRow(int time) {
-  swipeTopToBottom(time);
+  swipeTopToBottom(time, 0, sizeof(rowPins));
 }
 
 void action_cross(int wait_ms) {
