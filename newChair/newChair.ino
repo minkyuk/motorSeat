@@ -34,23 +34,29 @@ void loop() {
   int time = 200;
 
   if (digitalRead(BUTT1_PIN) == LOW) {
+    //colTest(3);
     fastSwipeOneCol(2, 100, 55); // Swipe Left Shoulder Blade
   }
 
   if (digitalRead(BUTT2_PIN) == LOW) {
-    fastSwipeOneCol(4, 100, 55); // Swipe Right Shoulder Blade
+    //colTest(2);
+    fastSwipeOneCol(4, 100, 50); // Swipe Right Shoulder Blade
     
   }
 
   if (digitalRead(BUTT3_PIN) == LOW) {
+    //colTest(1);
     fastRowOn(100, 55); // Swipe Top to Bottom w/ Overlap
   }
 
   if (digitalRead(BUTT4_PIN) == LOW) {
-    swipeTopToBottom(time); // Swipe Top to Bottom w/o Overlap
+    colOn(0); // Swipe Top to Bottom w/o Overlap
+    resetPins();
+    delay(100);
+    //colOff(0);
   }  
 }
-
+ 
 
 void fastSwipeOneCol(byte col, int dur_t, int delay_t) {
   
@@ -72,7 +78,7 @@ void fastSwipeOneCol(byte col, int dur_t, int delay_t) {
   }
 
   /* Optional: reset all pins after each mission*/
-  //resetPins();
+  resetPins();
 }
 
 void fastRowOn(int dur_t, int delay_t) {
@@ -98,7 +104,7 @@ void fastRowOn(int dur_t, int delay_t) {
     }
   }
   /* Optional: reset all pins after each mission */
-  //resetPins(); 
+  resetPins(); 
 }
 
 void interestIng(int dur_t, int delay_t) {
@@ -124,6 +130,16 @@ void interestIng(int dur_t, int delay_t) {
   }
   /* Optional: reset all pins after each mission */
   //resetPins();  
+}
+
+void rowTest(byte r) {
+  resetPins();
+  pckge_rowOn(r);
+}
+
+void colTest(byte c) {
+  resetPins();
+  pckge_colOn(c);
 }
 
 void rowOn(byte row) {
